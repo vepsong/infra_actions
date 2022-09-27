@@ -61,8 +61,7 @@ jobs:
           uses: docker/build-push-action@v2 
           with:
             push: true
-            tags: veps/infra_workflow:v01
-
+            tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY_NAME }}:latest
   deploy:
       runs-on: ubuntu-latest
       needs: build_and_push_to_docker_hub
@@ -76,7 +75,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }} # Если ваш ssh-ключ защищён фразой-паролемf
           script: |
             # Выполняет pull образа с DockerHub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/infra_workflow
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY_NAME }}
             # остановка всех контейнеров
             sudo docker stop $(sudo docker ps -a -q)
-            sudo docker run --rm -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/infra_workflow
+            sudo docker run --rm -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY_NAME }}
